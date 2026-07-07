@@ -131,9 +131,7 @@ export default function HomePage() {
           />
         </div>
 
-        {/* Protective Overlays for Text Contrast */}
-        <div className="pointer-events-none absolute inset-0 z-[1] bg-black/40" />
-        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/70 via-transparent to-transparent h-48" />
+        {/* Gradient overlays for seamless transition to next section */}
         <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-transparent via-transparent to-base-100/90" />
 
         {/* Hero copy */}
