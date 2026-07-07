@@ -1,26 +1,101 @@
 @import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@plugin "daisyui" {
+  themes: satwika --default;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@plugin "daisyui/theme" {
+  name: "satwika";
+  default: true;
+  primary: #1f4523;
+  primary-content: #ffffff;
+  secondary: #fce116;
+  secondary-content: #1f4523;
+  accent: #12711c;
+  accent-content: #ffffff;
+  neutral: #383838;
+  neutral-content: #ffffff;
+  base-100: #fdf8eb;
+  base-200: #f2e9d0;
+  base-300: #e6d8b3;
+  base-content: #1f4523;
+  info: #4f7942;
+  success: #2d4b2d;
+  warning: #fdc73f;
+  error: #ba1a1a;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@theme {
+  /* Font Family Mappings */
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-literata), ui-serif, Georgia, serif;
+  
+  --font-body: var(--font-manrope), sans-serif;
+  --font-heading: var(--font-literata), serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-base-100);
+    color: var(--color-base-content);
+    font-family: var(--font-sans);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom Typographic utilities */
+@utility text-display-lg {
+  font-family: var(--font-heading);
+  font-size: 48px;
+  line-height: 56px;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+@utility text-headline-lg {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 600;
+}
+
+@utility text-headline-md {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+}
+
+@utility text-body-lg {
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 400;
+}
+
+@utility text-body-md {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+@utility text-label-md {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+/* ─── SCROLLBAR ERADICATION ─── */
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+* {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }
