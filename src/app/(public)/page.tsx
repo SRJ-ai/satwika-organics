@@ -99,7 +99,7 @@ export default function HomePage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const { isHeroUiVisible, setHeroUiVisible } = useHero();
 
-  // Show UI on 2nd interaction (video end, scroll, mouse movement, or touch)
+  // Show UI on 2nd interaction (video end, scroll, click, or touch)
   useEffect(() => {
     // Reset state on mount
     setHeroUiVisible(false);
@@ -109,7 +109,7 @@ export default function HomePage() {
 
     const handleInteraction = () => {
       const now = Date.now();
-      // Require at least 500ms between interactions so a single mouse swipe doesn't count as 2
+      // Require at least 500ms between interactions
       if (now - lastInteractionTime < 500) return;
 
       interactionCount++;
@@ -117,24 +117,22 @@ export default function HomePage() {
 
       if (interactionCount >= 2) {
         setHeroUiVisible(true);
-        window.removeEventListener("mousemove", handleInteraction);
         window.removeEventListener("scroll", handleInteraction);
         window.removeEventListener("touchstart", handleInteraction);
         window.removeEventListener("click", handleInteraction);
       }
     };
 
-    window.addEventListener("mousemove", handleInteraction);
-    window.addEventListener("scroll", handleInteraction);
-    window.addEventListener("touchstart", handleInteraction);
-    window.addEventListener("click", handleInteraction);
+    // Use passive listeners to prevent scroll lag
+    window.addEventListener("scroll", handleInteraction, { passive: true });
+    window.addEventListener("touchstart", handleInteraction, { passive: true });
+    window.addEventListener("click", handleInteraction, { passive: true });
 
     // Fallback: Ensure UI appears after 6 seconds in case video autoplay fails 
     // or is blocked by mobile browsers
     const fallbackTimer = setTimeout(() => setHeroUiVisible(true), 6000);
 
     return () => {
-      window.removeEventListener("mousemove", handleInteraction);
       window.removeEventListener("scroll", handleInteraction);
       window.removeEventListener("touchstart", handleInteraction);
       window.removeEventListener("click", handleInteraction);
@@ -163,7 +161,7 @@ export default function HomePage() {
             muted
             playsInline
             onEnded={() => setHeroUiVisible(true)}
-            className="w-full h-full object-cover" 
+            className="w-full h-full object-cover will-change-transform" 
             src="/satwika-organics/godmode-hero.mp4"
           />
         </div>
