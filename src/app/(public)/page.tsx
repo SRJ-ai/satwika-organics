@@ -131,6 +131,9 @@ export default function HomePage() {
           />
         </div>
 
+        {/* Dark overlay for better text readability */}
+        <div className="pointer-events-none absolute inset-0 z-[1] bg-black/40" />
+
         {/* Gradient overlays for seamless transition to next section */}
         <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-transparent via-transparent to-base-100/90" />
 
