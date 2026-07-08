@@ -18,8 +18,29 @@ const literata = Literata({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://srj-ai.github.io/satwika-organics"),
   title: "Satwika Organics | Pure. Organic. Integrity.",
   description: "Nurturing well-being through uncompromised purity and sustainable traditions.",
+  icons: {
+    icon: "/satwika-organics/favicon.ico",
+    apple: "/satwika-organics/favicon.ico",
+  },
+  openGraph: {
+    title: "Satwika Organics",
+    description: "Nurturing well-being through uncompromised purity and sustainable traditions.",
+    url: "https://srj-ai.github.io/satwika-organics",
+    siteName: "Satwika Organics",
+    images: [
+      {
+        url: "https://srj-ai.github.io/satwika-organics/hero-background.png",
+        width: 1200,
+        height: 630,
+        alt: "Satwika Organics",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
