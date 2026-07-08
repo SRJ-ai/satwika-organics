@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Logo } from "@/components/ui/logo";
+import { useHero } from "@/components/layout/hero-context";
 
 const NAV_LINKS = [
   { label: "Shop", href: "/catalog" },
@@ -17,13 +18,17 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
+  const { isHeroUiVisible } = useHero();
+
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const isTransparent = !isScrolled && !mobileOpen && pathname === "/";
+  const isHomePage = pathname === "/";
+  const isTransparent = !isScrolled && !mobileOpen && isHomePage;
+  const shouldHideLinks = isHomePage && !isHeroUiVisible;
 
   return (
     <header 
@@ -46,110 +51,129 @@ export function Navbar() {
         </div>
 
         {/* Desktop Nav (Center) */}
-        <div className="flex-1 flex justify-center items-center hidden md:flex">
-          <ul className="flex items-center gap-1">
-            {NAV_LINKS.map((link) => {
-              const isActive = pathname === link.href || pathname?.startsWith(link.href + "/");
-              return (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className={`relative px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                      isTransparent
-                        ? isActive
-                          ? "text-white font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
-                          : "text-white/95 hover:text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
-                        : isActive
-                        ? "text-primary font-bold"
-                        : "text-base-content/60 hover:text-primary"
-                    }`}
-                  >
-                    {link.label}
-                    {isActive && !isTransparent && (
-                      <motion.div
-                        layoutId="nav-pill"
-                        className="absolute inset-0 rounded-full bg-primary/10 -z-10"
-                        transition={{
-                          type: "spring" as const,
-                          stiffness: 350,
-                          damping: 30,
-                        }}
-                      />
-                    )}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+        {!shouldHideLinks && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            className="flex-1 flex justify-center items-center hidden md:flex"
+          >
+            <ul className="flex items-center gap-1">
+              {NAV_LINKS.map((link) => {
+                const isActive = pathname === link.href || pathname?.startsWith(link.href + "/");
+                return (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className={`relative px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                        isTransparent
+                          ? isActive
+                            ? "text-white font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+                            : "text-white/95 hover:text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+                          : isActive
+                          ? "text-primary font-bold"
+                          : "text-base-content/60 hover:text-primary"
+                      }`}
+                    >
+                      {link.label}
+                      {isActive && !isTransparent && (
+                        <motion.div
+                          layoutId="nav-pill"
+                          className="absolute inset-0 rounded-full bg-primary/10 -z-10"
+                          transition={{
+                            type: "spring" as const,
+                            stiffness: 350,
+                            damping: 30,
+                          }}
+                        />
+                      )}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </motion.div>
+        )}
 
         {/* Desktop Actions (Right) */}
-        <div className="flex-1 flex items-center justify-end gap-3 hidden md:flex">
-          <Link
-            href="/auth/login"
-            className={`btn btn-ghost btn-sm rounded-full transition-colors ${
-              isTransparent 
-                ? "text-white/95 hover:text-white hover:bg-white/20 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] border-transparent" 
-                : "text-base-content/80 hover:text-primary"
-            }`}
+        {!shouldHideLinks && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            className="flex-1 flex items-center justify-end gap-3 hidden md:flex"
           >
-            Login / Profile
-          </Link>
-          <Link
-            href="/admin"
-            className={`btn btn-ghost btn-sm rounded-full transition-colors ${
-              isTransparent 
-                ? "text-white/95 hover:text-white hover:bg-white/20 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] border-transparent" 
-                : "text-base-content/80 hover:text-primary"
-            }`}
-          >
-            Admin
-          </Link>
-          <Link
-            href="/vendor"
-            className={`btn btn-sm rounded-full shadow-md transition-colors ${
-              isTransparent
-                ? "bg-white text-primary hover:bg-white/90 border-none"
-                : "btn-primary shadow-primary/20"
-            }`}
-          >
-            Vendor Portal
-          </Link>
-        </div>
+            <Link
+              href="/auth/login"
+              className={`btn btn-ghost btn-sm rounded-full transition-colors ${
+                isTransparent 
+                  ? "text-white/95 hover:text-white hover:bg-white/20 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] border-transparent" 
+                  : "text-base-content/80 hover:text-primary"
+              }`}
+            >
+              Login / Profile
+            </Link>
+            <Link
+              href="/admin"
+              className={`btn btn-ghost btn-sm rounded-full transition-colors ${
+                isTransparent 
+                  ? "text-white/95 hover:text-white hover:bg-white/20 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] border-transparent" 
+                  : "text-base-content/80 hover:text-primary"
+              }`}
+            >
+              Admin
+            </Link>
+            <Link
+              href="/vendor"
+              className={`btn btn-sm rounded-full shadow-md transition-colors ${
+                isTransparent
+                  ? "bg-white text-primary hover:bg-white/90 border-none"
+                  : "btn-primary shadow-primary/20"
+              }`}
+            >
+              Vendor Portal
+            </Link>
+          </motion.div>
+        )}
 
         {/* Mobile Hamburger */}
-        <button
-          className={`md:hidden btn btn-ghost btn-sm btn-square transition-colors ${
-            isTransparent ? "text-white" : "text-base-content"
-          }`}
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        {!shouldHideLinks && (
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            className={`md:hidden btn btn-ghost btn-sm btn-square transition-colors ${
+              isTransparent ? "text-white" : "text-base-content"
+            }`}
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Toggle menu"
           >
-            {mobileOpen ? (
-              <>
-                <path d="M18 6 6 18" />
-                <path d="m6 6 12 12" />
-              </>
-            ) : (
-              <>
-                <line x1="4" x2="20" y1="12" y2="12" />
-                <line x1="4" x2="20" y1="6" y2="6" />
-                <line x1="4" x2="20" y1="18" y2="18" />
-              </>
-            )}
-          </svg>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              {mobileOpen ? (
+                <>
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </>
+              ) : (
+                <>
+                  <line x1="4" x2="20" y1="12" y2="12" />
+                  <line x1="4" x2="20" y1="6" y2="6" />
+                  <line x1="4" x2="20" y1="18" y2="18" />
+                </>
+              )}
+            </svg>
+          </motion.button>
+        )}
       </nav>
 
       {/* Mobile Menu */}

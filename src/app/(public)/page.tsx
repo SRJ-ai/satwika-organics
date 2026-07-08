@@ -3,7 +3,8 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
+import { useHero } from "@/components/layout/hero-context";
 
 
 
@@ -96,14 +97,30 @@ const VALUES = [
    ═══════════════════════════════════════════ */
 export default function HomePage() {
   const heroRef = useRef<HTMLDivElement>(null);
-  const [isVideoEnded, setIsVideoEnded] = useState(false);
+  const { isHeroUiVisible, setHeroUiVisible } = useHero();
 
-  // Fallback: Ensure text appears after 6 seconds in case video autoplay fails 
-  // or is blocked by mobile browsers (e.g. low power mode)
+  // Show UI on video end, scroll, mouse movement, or touch
   useEffect(() => {
-    const fallbackTimer = setTimeout(() => setIsVideoEnded(true), 6000);
-    return () => clearTimeout(fallbackTimer);
-  }, []);
+    // Reset state on mount
+    setHeroUiVisible(false);
+
+    const handleInteraction = () => setHeroUiVisible(true);
+
+    window.addEventListener("mousemove", handleInteraction, { once: true });
+    window.addEventListener("scroll", handleInteraction, { once: true });
+    window.addEventListener("touchstart", handleInteraction, { once: true });
+
+    // Fallback: Ensure UI appears after 6 seconds in case video autoplay fails 
+    // or is blocked by mobile browsers
+    const fallbackTimer = setTimeout(() => setHeroUiVisible(true), 6000);
+
+    return () => {
+      window.removeEventListener("mousemove", handleInteraction);
+      window.removeEventListener("scroll", handleInteraction);
+      window.removeEventListener("touchstart", handleInteraction);
+      clearTimeout(fallbackTimer);
+    };
+  }, [setHeroUiVisible]);
   
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -125,20 +142,29 @@ export default function HomePage() {
             autoPlay
             muted
             playsInline
-            onEnded={() => setIsVideoEnded(true)}
+            onEnded={() => setHeroUiVisible(true)}
             className="w-full h-full object-cover origin-center scale-[1.05] will-change-transform contrast-[1.05] saturate-[1.10] brightness-[1.02]" 
             src="/satwika-organics/godmode-hero.mp4"
           />
         </div>
 
-        {/* Dark overlay for better text readability */}
-        <div className="pointer-events-none absolute inset-0 z-[1] bg-black/40" />
+        {isHeroUiVisible && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            className="pointer-events-none absolute inset-0 z-[1]"
+          >
+            {/* Dark overlay for better text readability */}
+            <div className="absolute inset-0 bg-black/40" />
 
-        {/* Gradient overlays for seamless transition to next section */}
-        <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-transparent via-transparent to-base-100/90" />
+            {/* Gradient overlays for seamless transition to next section */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-base-100/90" />
+          </motion.div>
+        )}
 
         {/* Hero copy */}
-        {isVideoEnded && (
+        {isHeroUiVisible && (
           <motion.div
             style={{ opacity: heroOpacity, y: heroY }}
             className="relative z-[2] max-w-3xl mx-auto px-6 text-center"
@@ -210,7 +236,7 @@ export default function HomePage() {
         )}
 
         {/* Scroll indicator */}
-        {isVideoEnded && (
+        {isHeroUiVisible && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
