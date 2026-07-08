@@ -143,7 +143,7 @@ export default function HomePage() {
             muted
             playsInline
             onEnded={() => setHeroUiVisible(true)}
-            className="w-full h-full object-cover origin-center scale-[1.05] will-change-transform contrast-[1.05] saturate-[1.10] brightness-[1.02]" 
+            className="w-full h-full object-cover" 
             src="/satwika-organics/godmode-hero.mp4"
           />
         </div>
