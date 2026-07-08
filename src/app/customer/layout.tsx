@@ -31,7 +31,7 @@ export default function CustomerLayout({
   };
 
   return (
-    <div className="flex min-h-screen bg-base-200">
+    <div className="flex h-[100dvh] bg-base-200 overflow-hidden">
       {/* Sidebar */}
       <aside className="w-64 bg-base-100 border-r border-base-300 flex flex-col shrink-0">
         {/* Sidebar Header */}
