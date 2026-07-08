@@ -127,7 +127,7 @@ export default function HomePage() {
             playsInline
             onEnded={() => setIsVideoEnded(true)}
             className="w-full h-full object-cover origin-center scale-[1.05] will-change-transform contrast-[1.05] saturate-[1.10] brightness-[1.02]" 
-            src="/godmode-hero.mp4"
+            src="/satwika-organics/godmode-hero.mp4"
           />
         </div>
 
