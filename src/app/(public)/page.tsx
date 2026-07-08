@@ -99,16 +99,35 @@ export default function HomePage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const { isHeroUiVisible, setHeroUiVisible } = useHero();
 
-  // Show UI on video end, scroll, mouse movement, or touch
+  // Show UI on 2nd interaction (video end, scroll, mouse movement, or touch)
   useEffect(() => {
     // Reset state on mount
     setHeroUiVisible(false);
 
-    const handleInteraction = () => setHeroUiVisible(true);
+    let interactionCount = 0;
+    let lastInteractionTime = 0;
 
-    window.addEventListener("mousemove", handleInteraction, { once: true });
-    window.addEventListener("scroll", handleInteraction, { once: true });
-    window.addEventListener("touchstart", handleInteraction, { once: true });
+    const handleInteraction = () => {
+      const now = Date.now();
+      // Require at least 500ms between interactions so a single mouse swipe doesn't count as 2
+      if (now - lastInteractionTime < 500) return;
+
+      interactionCount++;
+      lastInteractionTime = now;
+
+      if (interactionCount >= 2) {
+        setHeroUiVisible(true);
+        window.removeEventListener("mousemove", handleInteraction);
+        window.removeEventListener("scroll", handleInteraction);
+        window.removeEventListener("touchstart", handleInteraction);
+        window.removeEventListener("click", handleInteraction);
+      }
+    };
+
+    window.addEventListener("mousemove", handleInteraction);
+    window.addEventListener("scroll", handleInteraction);
+    window.addEventListener("touchstart", handleInteraction);
+    window.addEventListener("click", handleInteraction);
 
     // Fallback: Ensure UI appears after 6 seconds in case video autoplay fails 
     // or is blocked by mobile browsers
@@ -118,6 +137,7 @@ export default function HomePage() {
       window.removeEventListener("mousemove", handleInteraction);
       window.removeEventListener("scroll", handleInteraction);
       window.removeEventListener("touchstart", handleInteraction);
+      window.removeEventListener("click", handleInteraction);
       clearTimeout(fallbackTimer);
     };
   }, [setHeroUiVisible]);
